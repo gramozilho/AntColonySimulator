@@ -1,0 +1,68 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://HUD/Overlay.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Placeholders/hexagon.png" type="Texture" id=2]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Bob"
+tracks/0/type = "value"
+tracks/0/path = NodePath("../OverlayCell/CollisionPolygon2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 5, 5 ), Vector2( 6, 6 ), Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "Press"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("../OverlayCell/CollisionPolygon2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 5, 5 ), Vector2( 4, 4 ), Vector2( 5, 5 ) ]
+}
+
+[node name="OverlayCell" type="Area2D"]
+script = ExtResource( 1 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+scale = Vector2( 5, 5 )
+polygon = PoolVector2Array( -5.93475, -11.2684, 6.11079, -11.2684, 16.7665, -0.33475, 5.92548, 10.7842, -6.02741, 10.7842, -16.9611, -0.149435 )
+
+[node name="Sprite" type="Sprite" parent="CollisionPolygon2D"]
+position = Vector2( 0, -0.23327 )
+texture = ExtResource( 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Bob = SubResource( 1 )
+anims/Press = SubResource( 2 )
+
+[node name="ArmySize" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_top = -7.0
+margin_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="input_event" from="." to="." method="_on_OverlayCell_input_event"]
+[connection signal="mouse_entered" from="." to="." method="_on_OverlayCell_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_OverlayCell_mouse_exited"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
