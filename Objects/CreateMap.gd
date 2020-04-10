@@ -2,7 +2,7 @@ tool
 extends Node2D
 
 const HexagonTile = preload("res://HUD/Overlay.tscn")
-const tile_distance = Vector2(180/2, 120/2)
+const tile_distance = Vector2(240, 115)
 
 export var map_size = 2 setget set_map_size
 var map_info = {}
@@ -17,25 +17,28 @@ func map_maker():
 		for old_tile in get_children():
 			old_tile.free()
 	
+	var base_displacement = -Vector2((map_size-1)*tile_distance.x/2, 
+		(map_size-1)*tile_distance.y + (map_size-1)/2.0*tile_distance.y )
 	# Create new ones
 	for y in range(2*map_size-1):
 		for x in range(2*map_size-1):
 			
-			if ((y+x) >= map_size-1) and ((y+x) <= map_size*2+1):
+			if ((y+x) >= map_size-1) and ((y+x) <= ((map_size-1)*3)):
 			
 				var new_tile = HexagonTile.instance()
-				var x_displacement = (x)*tile_distance.x
-				var y_displacement = -(y+x-map_size-1)*tile_distance.y
+				var x_displacement = x*tile_distance.x/2 + base_displacement.x
+				var y_displacement = y*tile_distance.y + x/2.0*tile_distance.y + base_displacement.y
 				new_tile.position = Vector2(x_displacement, y_displacement)
-				new_tile.army_size.text = "aa" 1 #"(" #+ str(x) + "," + str(y) + ")"
+				new_tile.get_node("ArmySize").text = "(" + str(x) + "," + str(y) + ")"
 				# Add info from file
 				
-				#$Map.set_owner(new_tile)
+				#new_tile.set_owner(get_node("Map"))
 				add_child(new_tile)
+				new_tile.set_owner(get_tree().get_edited_scene_root())
 
 
 func set_map_size(new_size):
-	if true: #Engine.editor_hint:
+	if Engine.editor_hint:
 		print('Updating map')
 		map_size = new_size
 		map_maker()
