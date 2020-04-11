@@ -8,7 +8,8 @@ export var map_size = 2 setget set_map_size
 var map_info = {}
 
 func _ready():
-	pass
+	for tile in get_children():
+		tile.connect("pressed", get_parent(), "_tile_pressed")
 
 func map_maker():
 	# Clean current map nodes
@@ -29,16 +30,18 @@ func map_maker():
 				var x_displacement = x*tile_distance.x/2 + base_displacement.x
 				var y_displacement = y*tile_distance.y + x/2.0*tile_distance.y + base_displacement.y
 				new_tile.position = Vector2(x_displacement, y_displacement)
-				new_tile.get_node("ArmySize").text = "(" + str(x) + "," + str(y) + ")"
 				# Add info from file
+				new_tile.map_pos = Vector2(x, y)
 				
-				#new_tile.set_owner(get_node("Map"))
 				add_child(new_tile)
 				new_tile.set_owner(get_tree().get_edited_scene_root())
 
 
 func set_map_size(new_size):
+	map_size = new_size
 	if Engine.editor_hint:
-		print('Updating map')
 		map_size = new_size
 		map_maker()
+		print('Map updated')
+	else:
+		print('Not in editor, skip map update')
