@@ -25,15 +25,17 @@ var tile_explored = false setget update_explored
 var tile_selectable = true
 
 func _ready():
-	faction = randi()%4+1
 	update_faction(faction)
 	$CollisionPolygon2D/SpriteExplored.modulate = off_color
 	$CollisionPolygon2D/SpriteUnexplored.modulate = off_color_unexplored
 	$ArmySize.text = "(" + str(map_pos.x) + "," + str(map_pos.y) + ")"
 	update_visibility(tile_visible)
 	update_explored(tile_explored)
+	
+	# Handle local connections
+	# connect("input_event", self, "_on_OverlayCell_input_event")
 
-func _on_OverlayCell_input_event(viewport, event, shape_idx) -> void:
+func _on_OverlayCell_input_event(_viewport, event, _shape_idx) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and event.pressed and tile_selectable:
 			#print('Tile pressed (local) ', map_pos)
@@ -64,7 +66,7 @@ func _on_OverlayCell_mouse_exited() -> void:
 		#$AnimationPlayer.play("Reset")
 
 
-func _on_AnimationPlayer_animation_finished(anim_name : String) -> void:
+func _on_AnimationPlayer_animation_finished(_anim_name : String) -> void:
 	if (_is_hovering):
 		$AnimationPlayer.play("Bob")
 	pass

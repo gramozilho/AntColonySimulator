@@ -62,12 +62,10 @@ polygon = PoolVector2Array( -5.93475, -11.2684, 6.11079, -11.2684, 16.7665, -0.3
 visible = false
 modulate = Color( 0.223529, 0.223529, 0.223529, 1 )
 position = Vector2( 0, -0.23327 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 3 )
 
 [node name="SpriteExplored" type="Sprite" parent="CollisionPolygon2D"]
 position = Vector2( 0, -0.23327 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

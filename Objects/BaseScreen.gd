@@ -1,7 +1,5 @@
 extends Control
 
-signal buy
-
 func _on_MoreFood_pressed() -> void:
 	ColonyManager.food = 5
 
