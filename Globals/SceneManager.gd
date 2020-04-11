@@ -9,6 +9,6 @@ func _ready() -> void:
 
 func go_to(scene_idx) -> void:
 	if current_scene != scenes[scene_idx]:
-		get_tree().change_scene(scenes[scene_idx])
+		var _changed_scene = get_tree().change_scene(scenes[scene_idx])
 		current_scene = scenes[scene_idx]
 	pass

@@ -32,6 +32,7 @@ func map_maker():
 				new_tile.position = Vector2(x_displacement, y_displacement)
 				# Add info from file
 				new_tile.map_pos = Vector2(x, y)
+				new_tile.faction = randi()%4+1
 				
 				add_child(new_tile)
 				new_tile.set_owner(get_tree().get_edited_scene_root())

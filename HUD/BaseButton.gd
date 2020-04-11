@@ -20,7 +20,7 @@ func _on_BaseButton_pressed() -> void:
 	$AnimationPlayer.play("Press")
 	pass
 
-func _on_AnimationPlayer_animation_finished(anim_name : String) -> void:
+func _on_AnimationPlayer_animation_finished(_anim_name : String) -> void:
 	if (_is_hovering):
 		$AnimationPlayer.play("Bob")
 	pass
