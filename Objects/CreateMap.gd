@@ -29,8 +29,8 @@ func map_maker():
 				var x_displacement = x*tile_distance.x/2 + base_displacement.x
 				var y_displacement = y*tile_distance.y + x/2.0*tile_distance.y + base_displacement.y
 				new_tile.position = Vector2(x_displacement, y_displacement)
-				new_tile.get_node("ArmySize").text = "(" + str(x) + "," + str(y) + ")"
 				# Add info from file
+				new_tile.map_pos = Vector2(x, y)
 				
 				#new_tile.set_owner(get_node("Map"))
 				add_child(new_tile)
@@ -39,6 +39,6 @@ func map_maker():
 
 func set_map_size(new_size):
 	if Engine.editor_hint:
-		print('Updating map')
 		map_size = new_size
 		map_maker()
+		print('Map updated')

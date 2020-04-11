@@ -13,22 +13,16 @@ const colors = {
 	2: Color(.0, .0, .8, 1.0)
 }
 
-export var army_size = 0
+var army_size = 0
+export(Vector2) var map_pos
 
 func _ready():
 	base_color = colors[faction]
 	off_color = base_color
 	off_color[3] = 0.5
 	$CollisionPolygon2D/Sprite.modulate = off_color
-	
-	# TEMP randomize troops in enemy areas
-	if (army_size == 0) and (faction != 0):
-		army_size = randi()%5+2
-	
-	# only show number of troops for enemy areas
-	if faction != 0:
-		$ArmySize.text = str(army_size)
-	
+	$ArmySize.text = "(" + str(map_pos.x) + "," + str(map_pos.y) + ")"
+
 
 func _on_OverlayCell_input_event(viewport, event, shape_idx) -> void:
 	if event is InputEventMouseButton:
