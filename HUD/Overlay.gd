@@ -15,6 +15,8 @@ const colors = {
 
 var army_size = 0
 export(Vector2) var map_pos
+signal tile_pressed(map_pos)
+signal pressed
 
 func _ready():
 	base_color = colors[faction]
@@ -27,11 +29,14 @@ func _ready():
 func _on_OverlayCell_input_event(viewport, event, shape_idx) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and event.pressed:
-			$AnimationPlayer.play("Press")
-			_is_hovering = false
+			#print('Tile pressed (local) ', map_pos)
+			pressed_animation()
+			#emit_signal("tile_pressed", map_pos)
+			emit_signal("pressed", map_pos)
+			#_is_hovering = false
 
 func _on_OverlayCell_mouse_entered() -> void:
-	print('!')
+	#print('Over tile ', map_pos)
 	_is_hovering = true
 	$CollisionPolygon2D/Sprite.modulate = base_color
 	#$AnimationPlayer.play("Bob")
@@ -44,6 +49,9 @@ func _on_OverlayCell_mouse_exited() -> void:
 
 
 func _on_AnimationPlayer_animation_finished(anim_name : String) -> void:
-	if (_is_hovering):
-		$AnimationPlayer.play("Bob")
+	#if (_is_hovering):
+	#	$AnimationPlayer.play("Bob")
 	pass
+
+func pressed_animation():
+	$AnimationPlayer.play("Press")
