@@ -14,6 +14,8 @@ const colors = {
 }
 onready var base_color
 onready var off_color
+var base_color_unexplored = Color(.8, .8, .8, 1.0)
+var off_color_unexplored = Color(.2, .2, .2, 1.0)
 
 var army_size = 0
 export(Vector2) var map_pos
@@ -25,7 +27,8 @@ var tile_selectable = true
 func _ready():
 	faction = randi()%4+1
 	update_faction(faction)
-	$CollisionPolygon2D/Sprite.modulate = off_color
+	$CollisionPolygon2D/SpriteExplored.modulate = off_color
+	$CollisionPolygon2D/SpriteUnexplored.modulate = off_color_unexplored
 	$ArmySize.text = "(" + str(map_pos.x) + "," + str(map_pos.y) + ")"
 	update_visibility(tile_visible)
 	update_explored(tile_explored)
@@ -41,9 +44,11 @@ func _on_OverlayCell_input_event(viewport, event, shape_idx) -> void:
 
 func highlight(flag):
 	if flag:
-		$CollisionPolygon2D/Sprite.modulate = base_color
+		$CollisionPolygon2D/SpriteExplored.modulate = base_color
+		$CollisionPolygon2D/SpriteUnexplored.modulate = base_color_unexplored
 	else:
-		$CollisionPolygon2D/Sprite.modulate = off_color
+		$CollisionPolygon2D/SpriteExplored.modulate = off_color
+		$CollisionPolygon2D/SpriteUnexplored.modulate = off_color_unexplored
 
 func _on_OverlayCell_mouse_entered() -> void:
 	#print('Over tile ', map_pos)
@@ -74,8 +79,8 @@ func update_visibility(visibility_flag) -> void:
 
 func update_explored(explored_flag) -> void:
 	tile_explored = explored_flag
-	$CollisionPolygon2D/Sprite/Explored.visible = explored_flag
-	$CollisionPolygon2D/Sprite/Unexplored.visible = !explored_flag
+	$CollisionPolygon2D/SpriteExplored.visible = explored_flag
+	$CollisionPolygon2D/SpriteUnexplored.visible = !explored_flag
 
 func update_faction(faction_idx):
 	faction = faction_idx
@@ -83,6 +88,9 @@ func update_faction(faction_idx):
 	off_color = base_color
 	off_color[3] = 0.5
 	if _is_hovering:
-		$CollisionPolygon2D/Sprite.modulate = base_color
+		$CollisionPolygon2D/SpriteExplored.modulate = base_color
 	else:
-		$CollisionPolygon2D/Sprite.modulate = off_color
+		$CollisionPolygon2D/SpriteExplored.modulate = off_color
+
+func get_faction_name():
+	return FACTIONS.keys()[faction]

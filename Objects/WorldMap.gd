@@ -11,6 +11,8 @@ var move_directions = {'N': Vector2(0,-1),
 						'NW':  Vector2(-1,0), 
 						'SW':  Vector2(-1,1)}
 var last_tile_pressed = Vector2()
+const explore_button_text = "Explore selected tile"
+const invade_button_text = "Invade selected tile"
 
 func _ready():
 	map_size = $Map.map_size
@@ -22,10 +24,16 @@ func _ready():
 	update_visibility()
 
 func _tile_pressed(tile_pos):
+	highlight_last_pressed(false)
 	last_tile_pressed = tile_pos
 	highlight_last_pressed(true)
 	$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.disabled = false
-	print('Tile pressed: ', tile_pos)
+	var selected_tyle = get_tile_in_pos(tile_pos)
+	if selected_tyle.tile_explored:
+		$ActionHUD/VBoxContainer/TerritorySelect/TerritorySelected.text = get_tile_in_pos(tile_pos).get_faction_name()
+	else:
+		$ActionHUD/VBoxContainer/TerritorySelect/TerritorySelected.text = "???"
+	#print('Tile pressed: ', tile_pos)
 
 func highlight_last_pressed(flag):
 	var last_pressed_position = get_tile_in_pos(last_tile_pressed)
@@ -37,6 +45,8 @@ func _on_ConfirmAction_pressed():
 		get_tile_in_pos(last_tile_pressed).tile_explored = true
 	else:
 		get_tile_in_pos(last_tile_pressed).faction = 0
+	highlight_last_pressed(false)
+	last_tile_pressed = Vector2()
 	update_visibility()
 
 
@@ -56,19 +66,32 @@ func make_player_controlled(map_pos, update_exploration=false):
 func switch_action(action):
 	exploration_mode = action == 0
 	# Disable current button
-	$ActionHUD/VBoxContainer/TerritorySelect/ExploreButton.disabled = exploration_mode
-	$ActionHUD/VBoxContainer/TerritorySelect/AttackButton.disabled = !exploration_mode
+	$ActionHUD/VBoxContainer/ActionSelect/ExploreButton.disabled = exploration_mode
+	$ActionHUD/VBoxContainer/ActionSelect/AttackButton.disabled = !exploration_mode
 	if exploration_mode:
-		$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.text = "I'm ready to explore"
-		# Only allow selecting own territory and adjacent
+		$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.text = explore_button_text
+		# Only allow selecting own territory, already explored and adjacent to both
+		update_selection(current_map_list())
+
 	else:
-		$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.text = "I'm ready to invade"
-		# Only allow selecting adjacent territory
+		$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.text = invade_button_text
+		# Only allow selecting adjacent and explored territory
+		update_selection(invadable_tile_list())
+	
 	$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.disabled = true
 	highlight_last_pressed(false)
 	last_tile_pressed = Vector2()
 	update_visibility()
+
+func update_selection(new_list):
+	for tile in $Map.get_children():
+		if tile.map_pos in new_list:
+			tile.tile_selectable = true
+		else:
+			tile.tile_selectable = false
 	
+	
+
 func _on_ExploreButton_pressed():
 	switch_action(0)
 
@@ -97,7 +120,17 @@ func own_tiles_list():
 			own_list.append(tile.map_pos)
 	return own_list
 
+func invadable_tile_list():
+	# Select all tiles that have been explored but are not your own
+	var invaded_list = []
+	for tile_pos in explored_tiles_list():
+		if get_tile_in_pos(tile_pos).faction != 0:
+			invaded_list.append(tile_pos)
+	
+	return invaded_list
+
 func explored_tiles_list():
+	# Return all tiles that have been explored
 	var explore_list = []
 	for tile in $Map.get_children():
 		if tile.tile_explored:
@@ -105,6 +138,7 @@ func explored_tiles_list():
 	return explore_list
 
 func current_map_list(only_adjacent = false):
+	# Return all tiles that have been explored and their adjacents
 	#var current_list = own_tiles_list() + explore_tiles_list()
 	#var current_list = own_tiles_list()
 	var current_list = explored_tiles_list()

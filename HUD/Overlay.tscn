@@ -58,15 +58,14 @@ script = ExtResource( 1 )
 scale = Vector2( 5, 5 )
 polygon = PoolVector2Array( -5.93475, -11.2684, 6.11079, -11.2684, 16.7665, -0.33475, 5.92548, 10.7842, -6.02741, 10.7842, -16.9611, -0.149435 )
 
-[node name="Sprite" type="Node2D" parent="CollisionPolygon2D"]
-
-[node name="Unexplored" type="Sprite" parent="CollisionPolygon2D/Sprite"]
+[node name="SpriteUnexplored" type="Sprite" parent="CollisionPolygon2D"]
 visible = false
+modulate = Color( 0.223529, 0.223529, 0.223529, 1 )
 position = Vector2( 0, -0.23327 )
 scale = Vector2( 1, 1 )
 texture = ExtResource( 3 )
 
-[node name="Explored" type="Sprite" parent="CollisionPolygon2D/Sprite"]
+[node name="SpriteExplored" type="Sprite" parent="CollisionPolygon2D"]
 position = Vector2( 0, -0.23327 )
 scale = Vector2( 1, 1 )
 texture = ExtResource( 2 )
