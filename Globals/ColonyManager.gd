@@ -6,6 +6,7 @@ var ants = 10 setget update_ants
 var max_ants = 20 setget update_max_ants
 
 var prices = {'ants': 1, 'max_ants':1, 'max_food': 1}
+var map_data = {}
 
 func _ready() -> void:
 	update_hud()

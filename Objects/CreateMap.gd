@@ -33,14 +33,19 @@ func map_maker():
 				# Add info from file
 				new_tile.map_pos = Vector2(x, y)
 				new_tile.faction = randi()%4+1
+				#make_tile_connections(new_tile)
 				
 				add_child(new_tile)
 				new_tile.set_owner(get_tree().get_edited_scene_root())
 
+func make_tile_connections(tile):
+	tile.connect("input_event", self, "_on_OverlayCell_input_event")
+	tile.connect("mouse_entered", self, "_on_OverlayCell_mouse_entered")
+	tile.connect("mouse_exited", self, "_on_OverlayCell_mouse_entered")
 
 func set_map_size(new_size):
 	map_size = new_size
-	if Engine.editor_hint:
+	if Engine.editor_hint and (get_tree() != null):
 		map_size = new_size
 		map_maker()
 		print('Map updated')
