@@ -7,9 +7,122 @@
 [ext_resource path="res://HUD/BaseButton.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Objects/ActionHUD.gd" type="Script" id=6]
 [ext_resource path="res://HUD/Overlay.tscn" type="PackedScene" id=7]
-[ext_resource path="res://HUD/Overlay.gd" type="Script" id=8]
 [ext_resource path="res://Objects/WorldMap.gd" type="Script" id=9]
 [ext_resource path="res://Assets/Fonts/pixelmix.ttf" type="DynamicFontData" id=10]
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends Area2D
+
+var _is_hovering := false
+
+enum FACTIONS {GREEN, RED, BLUE, YELLOW, PURPLE, BLUEISH}
+export(FACTIONS) var faction setget update_faction
+const colors = {
+	0: Color(.0, .8, .0, 1.0),
+	1: Color(.8, .0, .0, 1.0),
+	2: Color(.0, .0, .8, 1.0),
+	3: Color(.8, .8, .0, 1.0),
+	4: Color(.8, .0, .8, 1.0),
+	5: Color(.0, .8, .8, 1.0)
+}
+onready var base_color
+onready var off_color
+var base_color_unexplored = Color(.8, .8, .8, 1.0)
+var off_color_unexplored = Color(.2, .2, .2, 1.0)
+
+var army_size = 0
+export(Vector2) var map_pos
+signal pressed
+var tile_visible = true setget update_visibility
+var tile_explored = false setget update_explored
+var tile_selectable = true
+
+
+func _ready():
+	update_faction(faction)
+	$CollisionPolygon2D/SpriteExplored.modulate = off_color
+	$CollisionPolygon2D/SpriteUnexplored.modulate = off_color_unexplored
+	$ArmySize.text = \"(\" + str(map_pos.x) + \",\" + str(map_pos.y) + \")\"
+	update_visibility(tile_visible)
+	update_explored(tile_explored)
+	make_connections()
+	
+func make_connections():
+	# Handle local connections
+	connect(\"input_event\", self, \"_on_OverlayCell_input_event\")
+	connect(\"mouse_entered\", self, \"_on_OverlayCell_mouse_entered\")
+	connect(\"mouse_exited\", self, \"_on_OverlayCell_mouse_exited\")
+
+func _on_OverlayCell_input_event(_viewport, event, _shape_idx) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_LEFT and event.pressed and tile_selectable:
+			#print('Tile pressed (local) ', map_pos)
+			pressed_animation()
+			#emit_signal(\"tile_pressed\", map_pos)
+			emit_signal(\"pressed\", map_pos)
+			#_is_hovering = false
+
+func highlight(flag):
+	if flag:
+		$CollisionPolygon2D/SpriteExplored.modulate = base_color
+		$CollisionPolygon2D/SpriteUnexplored.modulate = base_color_unexplored
+	else:
+		$CollisionPolygon2D/SpriteExplored.modulate = off_color
+		$CollisionPolygon2D/SpriteUnexplored.modulate = off_color_unexplored
+
+func _on_OverlayCell_mouse_entered() -> void:
+	#print('Over tile ', map_pos)
+	_is_hovering = true
+	if tile_selectable:
+		#$CollisionPolygon2D/Sprite.modulate = base_color
+		$AnimationPlayer.play(\"Bob\")
+
+func _on_OverlayCell_mouse_exited() -> void:
+	_is_hovering = false
+	#if tile_selectable:
+	#	$CollisionPolygon2D/Sprite.modulate = off_color
+		#$AnimationPlayer.play(\"Reset\")
+
+
+func _on_AnimationPlayer_animation_finished(_anim_name : String) -> void:
+	if (_is_hovering):
+		$AnimationPlayer.play(\"Bob\")
+	pass
+
+func pressed_animation():
+	$AnimationPlayer.play(\"Press\")
+
+
+func update_visibility(visibility_flag) -> void:
+	tile_visible = visibility_flag
+	visible = visibility_flag
+
+func update_explored(explored_flag) -> void:
+	tile_explored = explored_flag
+	$CollisionPolygon2D/SpriteExplored.visible = explored_flag
+	$CollisionPolygon2D/SpriteUnexplored.visible = !explored_flag
+
+func update_faction(faction_idx):
+	faction = faction_idx
+	base_color = colors[faction]
+	off_color = base_color
+	off_color[3] = 0.5
+	if _is_hovering:
+		$CollisionPolygon2D/SpriteExplored.modulate = base_color
+	else:
+		$CollisionPolygon2D/SpriteExplored.modulate = off_color
+
+func get_faction_name():
+	return FACTIONS.keys()[faction]
+
+func summary():
+	return {'map_pos': map_pos, 'faction': faction, 'tile_explored': tile_explored}
+
+func populate(data):
+	assert(data['map_pos'] == map_pos)
+	self.faction = data['faction']
+	self.tile_explored = data['tile_explored']
+"
 
 [sub_resource type="DynamicFont" id=1]
 size = 26
@@ -31,223 +144,223 @@ map_size = 4
 
 [node name="OverlayCell" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, -345 )
-script = ExtResource( 8 )
-faction = 3
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 3, 0 )
 
 [node name="OverlayCell2" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, -287.5 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 4, 0 )
 
 [node name="OverlayCell3" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, -230 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 5, 0 )
 
 [node name="OverlayCell4" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, -172.5 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 2
 map_pos = Vector2( 6, 0 )
 
 [node name="OverlayCell5" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, -287.5 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 3
 map_pos = Vector2( 2, 1 )
 
 [node name="OverlayCell6" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, -230 )
-script = ExtResource( 8 )
-faction = 1
+script = SubResource( 4 )
+faction = 2
 map_pos = Vector2( 3, 1 )
 
 [node name="OverlayCell7" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, -172.5 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 2
 map_pos = Vector2( 4, 1 )
 
 [node name="OverlayCell8" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, -115 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 3
 map_pos = Vector2( 5, 1 )
 
 [node name="OverlayCell9" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, -57.5 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 3
 map_pos = Vector2( 6, 1 )
 
 [node name="OverlayCell10" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, -230 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 1
 map_pos = Vector2( 1, 2 )
 
 [node name="OverlayCell11" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, -172.5 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 1
 map_pos = Vector2( 2, 2 )
 
 [node name="OverlayCell12" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, -115 )
-script = ExtResource( 8 )
-faction = 3
+script = SubResource( 4 )
+faction = 4
 map_pos = Vector2( 3, 2 )
 
 [node name="OverlayCell13" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, -57.5 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 2
 map_pos = Vector2( 4, 2 )
 
 [node name="OverlayCell14" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, 0 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 5, 2 )
 
 [node name="OverlayCell15" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, 57.5 )
-script = ExtResource( 8 )
-faction = 1
+script = SubResource( 4 )
+faction = 2
 map_pos = Vector2( 6, 2 )
 
 [node name="OverlayCell16" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, -172.5 )
-script = ExtResource( 8 )
-faction = 3
+script = SubResource( 4 )
+faction = 4
 map_pos = Vector2( 0, 3 )
 
 [node name="OverlayCell17" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, -115 )
-script = ExtResource( 8 )
-faction = 3
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 1, 3 )
 
 [node name="OverlayCell18" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, -57.5 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 3
 map_pos = Vector2( 2, 3 )
 
 [node name="OverlayCell19" type="Area2D" parent="Map" instance=ExtResource( 7 )]
-script = ExtResource( 8 )
-faction = 1
+script = SubResource( 4 )
+faction = 4
 map_pos = Vector2( 3, 3 )
 
 [node name="OverlayCell20" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, 57.5 )
-script = ExtResource( 8 )
-faction = 1
+script = SubResource( 4 )
+faction = 3
 map_pos = Vector2( 4, 3 )
 
 [node name="OverlayCell21" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, 115 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 2
 map_pos = Vector2( 5, 3 )
 
 [node name="OverlayCell22" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, 172.5 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 6, 3 )
 
 [node name="OverlayCell23" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, -57.5 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 1
 map_pos = Vector2( 0, 4 )
 
 [node name="OverlayCell24" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, 0 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 2
 map_pos = Vector2( 1, 4 )
 
 [node name="OverlayCell25" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, 57.5 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 2
 map_pos = Vector2( 2, 4 )
 
 [node name="OverlayCell26" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, 115 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 3, 4 )
 
 [node name="OverlayCell27" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, 172.5 )
-script = ExtResource( 8 )
-faction = 4
+script = SubResource( 4 )
+faction = 2
 map_pos = Vector2( 4, 4 )
 
 [node name="OverlayCell28" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, 230 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 3
 map_pos = Vector2( 5, 4 )
 
 [node name="OverlayCell29" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, 57.5 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 3
 map_pos = Vector2( 0, 5 )
 
 [node name="OverlayCell30" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, 115 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 3
 map_pos = Vector2( 1, 5 )
 
 [node name="OverlayCell31" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, 172.5 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 2, 5 )
 
 [node name="OverlayCell32" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, 230 )
-script = ExtResource( 8 )
+script = SubResource( 4 )
 faction = 2
 map_pos = Vector2( 3, 5 )
 
 [node name="OverlayCell33" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, 287.5 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 4, 5 )
 
 [node name="OverlayCell34" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, 172.5 )
-script = ExtResource( 8 )
-faction = 1
+script = SubResource( 4 )
+faction = 3
 map_pos = Vector2( 0, 6 )
 
 [node name="OverlayCell35" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, 230 )
-script = ExtResource( 8 )
-faction = 3
+script = SubResource( 4 )
+faction = 1
 map_pos = Vector2( 1, 6 )
 
 [node name="OverlayCell36" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, 287.5 )
-script = ExtResource( 8 )
-faction = 2
+script = SubResource( 4 )
+faction = 4
 map_pos = Vector2( 2, 6 )
 
 [node name="OverlayCell37" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, 345 )
-script = ExtResource( 8 )
-faction = 1
+script = SubResource( 4 )
+faction = 4
 map_pos = Vector2( 3, 6 )
 
 [node name="ActionHUD" type="Control" parent="."]
@@ -399,117 +512,6 @@ You are the green colony
 Can only explore territory adjacent to yours
 Can only invade explored territory
 Full tile background means tile is explored"
-[connection signal="input_event" from="Map/OverlayCell" to="Map/OverlayCell" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell" to="Map/OverlayCell" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell" to="Map/OverlayCell" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell2" to="Map/OverlayCell2" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell2" to="Map/OverlayCell2" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell2" to="Map/OverlayCell2" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell3" to="Map/OverlayCell3" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell3" to="Map/OverlayCell3" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell3" to="Map/OverlayCell3" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell4" to="Map/OverlayCell4" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell4" to="Map/OverlayCell4" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell4" to="Map/OverlayCell4" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell5" to="Map/OverlayCell5" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell5" to="Map/OverlayCell5" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell5" to="Map/OverlayCell5" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell6" to="Map/OverlayCell6" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell6" to="Map/OverlayCell6" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell6" to="Map/OverlayCell6" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell7" to="Map/OverlayCell7" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell7" to="Map/OverlayCell7" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell7" to="Map/OverlayCell7" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell8" to="Map/OverlayCell8" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell8" to="Map/OverlayCell8" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell8" to="Map/OverlayCell8" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell9" to="Map/OverlayCell9" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell9" to="Map/OverlayCell9" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell9" to="Map/OverlayCell9" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell10" to="Map/OverlayCell10" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell10" to="Map/OverlayCell10" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell10" to="Map/OverlayCell10" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell11" to="Map/OverlayCell11" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell11" to="Map/OverlayCell11" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell11" to="Map/OverlayCell11" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell12" to="Map/OverlayCell12" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell12" to="Map/OverlayCell12" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell12" to="Map/OverlayCell12" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell13" to="Map/OverlayCell13" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell13" to="Map/OverlayCell13" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell13" to="Map/OverlayCell13" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell14" to="Map/OverlayCell14" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell14" to="Map/OverlayCell14" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell14" to="Map/OverlayCell14" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell15" to="Map/OverlayCell15" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell15" to="Map/OverlayCell15" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell15" to="Map/OverlayCell15" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell16" to="Map/OverlayCell16" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell16" to="Map/OverlayCell16" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell16" to="Map/OverlayCell16" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell17" to="Map/OverlayCell17" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell17" to="Map/OverlayCell17" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell17" to="Map/OverlayCell17" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell18" to="Map/OverlayCell18" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell18" to="Map/OverlayCell18" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell18" to="Map/OverlayCell18" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell19" to="Map/OverlayCell19" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell19" to="Map/OverlayCell19" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell19" to="Map/OverlayCell19" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell20" to="Map/OverlayCell20" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell20" to="Map/OverlayCell20" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell20" to="Map/OverlayCell20" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell21" to="Map/OverlayCell21" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell21" to="Map/OverlayCell21" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell21" to="Map/OverlayCell21" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell22" to="Map/OverlayCell22" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell22" to="Map/OverlayCell22" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell22" to="Map/OverlayCell22" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell23" to="Map/OverlayCell23" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell23" to="Map/OverlayCell23" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell23" to="Map/OverlayCell23" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell24" to="Map/OverlayCell24" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell24" to="Map/OverlayCell24" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell24" to="Map/OverlayCell24" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell25" to="Map/OverlayCell25" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell25" to="Map/OverlayCell25" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell25" to="Map/OverlayCell25" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell26" to="Map/OverlayCell26" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell26" to="Map/OverlayCell26" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell26" to="Map/OverlayCell26" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell27" to="Map/OverlayCell27" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell27" to="Map/OverlayCell27" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell27" to="Map/OverlayCell27" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell28" to="Map/OverlayCell28" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell28" to="Map/OverlayCell28" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell28" to="Map/OverlayCell28" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell29" to="Map/OverlayCell29" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell29" to="Map/OverlayCell29" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell29" to="Map/OverlayCell29" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell30" to="Map/OverlayCell30" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell30" to="Map/OverlayCell30" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell30" to="Map/OverlayCell30" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell31" to="Map/OverlayCell31" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell31" to="Map/OverlayCell31" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell31" to="Map/OverlayCell31" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell32" to="Map/OverlayCell32" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell32" to="Map/OverlayCell32" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell32" to="Map/OverlayCell32" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell33" to="Map/OverlayCell33" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell33" to="Map/OverlayCell33" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell33" to="Map/OverlayCell33" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell34" to="Map/OverlayCell34" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell34" to="Map/OverlayCell34" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell34" to="Map/OverlayCell34" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell35" to="Map/OverlayCell35" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell35" to="Map/OverlayCell35" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell35" to="Map/OverlayCell35" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell36" to="Map/OverlayCell36" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell36" to="Map/OverlayCell36" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell36" to="Map/OverlayCell36" method="_on_OverlayCell_mouse_exited"]
-[connection signal="input_event" from="Map/OverlayCell37" to="Map/OverlayCell37" method="_on_OverlayCell_input_event"]
-[connection signal="mouse_entered" from="Map/OverlayCell37" to="Map/OverlayCell37" method="_on_OverlayCell_mouse_entered"]
-[connection signal="mouse_exited" from="Map/OverlayCell37" to="Map/OverlayCell37" method="_on_OverlayCell_mouse_exited"]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/ActionSelect/ExploreButton" to="." method="_on_ExploreButton_pressed"]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/ActionSelect/AttackButton" to="." method="_on_AttackButton_pressed"]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/PartySelect/LessAnts" to="ActionHUD" method="_on_LessAnts_pressed"]
