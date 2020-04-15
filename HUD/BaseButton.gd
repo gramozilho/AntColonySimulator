@@ -4,15 +4,15 @@ var _is_hovering := false
 
 func _on_BaseButton_mouse_entered() -> void:
 	_is_hovering = true
-	modulate = Color(1.5, 1.5, 1.5, 1)
+	#modulate = Color(1.5, 1.5, 1.5, 1)
 	$AnimationPlayer.play("Bob")
 	$HoverSound.play()
 	pass
 
 func _on_BaseButton_mouse_exited() -> void:
 	_is_hovering = false
-	modulate = Color(1, 1, 1, 1)
-	$AnimationPlayer.stop()
+	#modulate = Color(1, 1, 1, 1)
+	$AnimationPlayer.play("Reset")
 	rect_scale = Vector2.ONE
 	pass
 

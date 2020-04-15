@@ -21,8 +21,9 @@ const no_tile_selection_text = ""
 func _ready() -> void:
 	map_size = $Map.map_size
 	home_tile = Vector2(map_size-1, 2*(map_size-1))
-	if len(ColonyManager.map_data)==0:
+	if len(WorldVariables.map_data)==0:
 		make_player_controlled(home_tile, true)
+		WorldVariables.temp_initialize_map_data(get_node("Map"))
 	else:
 		load_map()
 	#make_player_controlled(Vector2(2,2), true)
@@ -31,9 +32,9 @@ func _ready() -> void:
 	update_visibility()
 
 func load_map():
-	for key in ColonyManager.map_data:
+	for key in WorldVariables.map_data:
 		#print('load ', ColonyManager.map_data[key], ' key ', key)
-		get_tile_in_pos(key).populate(ColonyManager.map_data[key])
+		get_tile_in_pos(key).populate(WorldVariables.map_data[key])
 
 func _tile_pressed(tile_pos) -> void:
 	highlight_last_pressed(false)
@@ -60,7 +61,7 @@ func _on_ConfirmAction_pressed() -> void:
 		get_tile_in_pos(last_tile_pressed).tile_explored = true
 	else:
 		get_tile_in_pos(last_tile_pressed).faction = 0
-	highlight_last_pressed(false)
+	#highlight_last_pressed(false)
 	last_tile_pressed = Vector2()
 	update_visibility()
 	#$ActionHUD/VBoxContainer/TerritorySelect/TerritorySelected.text = no_tile_selection_text
@@ -128,7 +129,7 @@ func update_visibility() -> void:
 	
 	# Save new map
 	for tile in $Map.get_children():
-		ColonyManager.map_data[tile.map_pos] = tile.summary()
+		WorldVariables.map_data[tile.map_pos] = tile.summary()
 
 func own_tiles_list():
 	var own_list = []

@@ -27,6 +27,9 @@ var tile_selectable = true
 
 func _ready():
 	if not Engine.editor_hint:
+		initialize()
+
+func initialize():
 		update_faction(faction)
 		#if faction == 0:
 			#tile_explored = true
@@ -107,3 +110,9 @@ func summary() -> Dictionary:
 	return {'map_pos': map_pos, 'faction': faction, 'tile_explored': tile_explored}
 	#return {"map_pos_x": map_pos.x, "map_pos_y": map_pos.y, \
 	#	"faction": faction, "tile_explored": tile_explored}
+
+func populate(data):
+	assert(data.map_pos == map_pos)
+	faction = data.faction
+	tile_explored = data.tile_explored
+	initialize()

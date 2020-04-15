@@ -1,0 +1,61 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://HUD/BaseButton.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Assets/Placeholders/frame.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Fonts/BaseFont.tres" type="DynamicFont" id=4]
+
+[node name="MarginContainer" type="MarginContainer"]
+margin_right = 151.0
+margin_bottom = 110.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+modulate = Color( 0.247059, 0.14902, 0.121569, 1 )
+margin_right = 151.0
+margin_bottom = 110.0
+texture = ExtResource( 3 )
+region_rect = Rect2( 0, 17, 16, 16 )
+patch_margin_left = 8
+patch_margin_top = 7
+patch_margin_right = 8
+patch_margin_bottom = 9
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 151.0
+margin_bottom = 110.0
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
+margin_right = 151.0
+margin_bottom = 110.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer"]
+margin_left = 15.0
+margin_top = 12.0
+margin_right = 135.0
+margin_bottom = 98.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
+margin_right = 120.0
+margin_bottom = 32.0
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+text = "Label"
+uppercase = true
+
+[node name="BaseButton" parent="MarginContainer/CenterContainer/VBoxContainer" instance=ExtResource( 1 )]
+margin_left = 0.0
+margin_top = 36.0
+margin_right = 120.0
+margin_bottom = 86.1093
+
+[node name="Tween" type="Tween" parent="."]

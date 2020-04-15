@@ -89,4 +89,5 @@ func _on_DeleteButton_pressed():
 
 
 func update_data():
-	ColonyManager.load(data['ColonyManager'])
+	pass
+	#ColonyManager.load(data['ColonyManager'])
