@@ -14,6 +14,8 @@ var last_tile_pressed = Vector2()
 const explore_button_text = "Explore selected tile"
 const invade_button_text = "Invade selected tile"
 const no_tile_selection_text = ""
+#var map_data = {}
+#var map_data = ColonyManager.map_data
 
 
 func _ready() -> void:
@@ -176,5 +178,10 @@ func current_map_list(only_adjacent = false):
 		return adjacent_list
 	return current_list + adjacent_list
 
-
-
+#func save() -> Dictionary:
+#	var data_out = {}
+#	var i = 0
+#	for tile in $Map.get_children():
+#		data_out[i] = tile.summary()
+#		i += 1
+#	return data_out

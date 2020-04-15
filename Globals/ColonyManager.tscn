@@ -5,7 +5,9 @@
 [ext_resource path="res://Assets/Fonts/BaseButtonFont.tres" type="DynamicFont" id=3]
 [ext_resource path="res://HUD/BaseButton.tscn" type="PackedScene" id=4]
 
-[node name="ColonyManager" type="CanvasLayer"]
+[node name="ColonyManager" type="CanvasLayer" groups=[
+"save",
+]]
 script = ExtResource( 1 )
 
 [node name="Bg" type="Sprite" parent="."]
