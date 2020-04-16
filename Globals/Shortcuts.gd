@@ -32,3 +32,6 @@ func _on_LoadMap_pressed() -> void:
 
 func _on_ExtraFood_pressed():
 	ColonyVariables.cheatcode('food')
+
+func _on_ExitButton_pressed():
+	get_tree().quit()

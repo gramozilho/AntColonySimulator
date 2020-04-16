@@ -1,8 +1,11 @@
 extends Node
 
 onready var current_scene
-var scenes = {'base': "res://Objects/BaseScreen.tscn",
-	'map': "res://Objects/WorldMap.tscn"}
+var scenes = {
+	'base': "res://Objects/BaseScreen.tscn",
+	'map': "res://Objects/WorldMap.tscn",
+	'temp': "res://Objects/TempScene.tscn"
+	}
 const SaveGame = preload("res://Save/SaveGame.gd")
 var game_data = {}
 

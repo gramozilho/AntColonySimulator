@@ -85,3 +85,7 @@ func cheatcode(code):
 func change_variable(var_name, change):
 	if var_name == "food":
 		pass #update_food()
+
+func add_loot(loot):
+	update_ants(loot['ants'])
+	update_food(food + loot['food'])

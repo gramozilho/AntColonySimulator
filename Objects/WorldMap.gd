@@ -3,14 +3,14 @@ extends Node2D
 var home_tile = Vector2()
 onready var map_size  # Get from map node
 enum ACTIONS {EXPLORE, INVADE}
-var exploration_mode = 0
+#var exploration_mode = 0
 var move_directions = {'N': Vector2(0,-1), 
 						'S': Vector2(0,1),  
 						'NE': Vector2(1,-1), 
 						'SE':  Vector2(1,0), 
 						'NW':  Vector2(-1,0), 
 						'SW':  Vector2(-1,1)}
-var last_tile_pressed = Vector2()
+#var last_tile_pressed = Vector2()
 const explore_button_text = "Explore selected tile"
 const invade_button_text = "Invade selected tile"
 const no_tile_selection_text = ""
@@ -19,6 +19,9 @@ const no_tile_selection_text = ""
 
 
 func _ready() -> void:
+	WorldVariables.party["ants"] = 0
+	WorldVariables.selected_territory = Vector2()
+	
 	map_size = $Map.map_size
 	home_tile = Vector2(map_size-1, 2*(map_size-1))
 	if len(WorldVariables.map_data)==0:
@@ -28,8 +31,9 @@ func _ready() -> void:
 		load_map()
 	#make_player_controlled(Vector2(2,2), true)
 	#make_player_controlled(Vector2(2,3), true)
-	switch_action(exploration_mode)
+	switch_action(0)
 	update_visibility()
+	show_loot()
 
 func load_map():
 	for key in WorldVariables.map_data:
@@ -38,7 +42,7 @@ func load_map():
 
 func _tile_pressed(tile_pos) -> void:
 	highlight_last_pressed(false)
-	last_tile_pressed = tile_pos
+	WorldVariables.selected_territory = tile_pos
 	highlight_last_pressed(true)
 	$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.disabled = false
 	var selected_tyle = get_tile_in_pos(tile_pos)
@@ -49,7 +53,7 @@ func _tile_pressed(tile_pos) -> void:
 	#print('Tile pressed: ', tile_pos)
 
 func highlight_last_pressed(flag):
-	var last_pressed_position = get_tile_in_pos(last_tile_pressed)
+	var last_pressed_position = get_tile_in_pos(WorldVariables.selected_territory)
 	if last_pressed_position:
 		last_pressed_position.highlight(flag)
 	if !flag:
@@ -57,12 +61,28 @@ func highlight_last_pressed(flag):
 
 
 func _on_ConfirmAction_pressed() -> void:
-	if exploration_mode:
-		get_tile_in_pos(last_tile_pressed).tile_explored = true
+	if WorldVariables.party["ants"] == 0:
+		# Shake party selector
+		$ActionHUD/VBoxContainer/PartySelect/Shake.shake()
+		$ActionHUD/VBoxContainer/PartySelect/ErrorMsg.text = "(minimum 1)"
 	else:
-		get_tile_in_pos(last_tile_pressed).faction = 0
+		$ActionHUD/VBoxContainer/PartySelect/ErrorMsg.text = ""
+	if WorldVariables.selected_territory == Vector2():
+		# Shake selection
+		$ActionHUD/VBoxContainer/TerritorySelect/Shake.shake()
+		$ActionHUD/VBoxContainer/TerritorySelect/TerritorySelected.text = "(none)"
+	if (WorldVariables.party["ants"] == 0) or \
+		(WorldVariables.selected_territory == Vector2()):
+		return
+	SceneManager.go_to("temp")
+
+func old_confirmAction():
+	if WorldVariables.exploration_mode:
+		get_tile_in_pos(WorldVariables.selected_territory).tile_explored = true
+	else:
+		get_tile_in_pos(WorldVariables.selected_territory).faction = 0
 	#highlight_last_pressed(false)
-	last_tile_pressed = Vector2()
+	WorldVariables.selected_territory = Vector2()
 	update_visibility()
 	#$ActionHUD/VBoxContainer/TerritorySelect/TerritorySelected.text = no_tile_selection_text
 
@@ -81,24 +101,24 @@ func make_player_controlled(map_pos, update_exploration=false) -> void:
 				tile.update_explored(true)
 
 func switch_action(action) -> void:
-	exploration_mode = action == 0
+	var explore_selected = action == 0
+	WorldVariables.exploration_mode = explore_selected
 	# Disable current button
-	$ActionHUD/VBoxContainer/ActionSelect/ExploreButton.disabled = exploration_mode
-	$ActionHUD/VBoxContainer/ActionSelect/AttackButton.disabled = !exploration_mode
-	if exploration_mode:
+	$ActionHUD/VBoxContainer/ActionSelect/ExploreButton.disabled = explore_selected
+	$ActionHUD/VBoxContainer/ActionSelect/AttackButton.disabled = !explore_selected
+	if explore_selected:
 		$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.text = explore_button_text
 		# Only allow selecting own territory, already explored and adjacent to both
 		update_selection(current_map_list())
-
 	else:
 		$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.text = invade_button_text
 		# Only allow selecting adjacent and explored territory
 		update_selection(invadable_tile_list())
 	#$ActionHUD/VBoxContainer/TerritorySelect/TerritorySelected.text = no_tile_selection_text
 	
-	$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.disabled = true
+	#$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.disabled = true
 	highlight_last_pressed(false)
-	last_tile_pressed = Vector2()
+	WorldVariables.selected_territory = Vector2()
 	update_visibility()
 
 func update_selection(new_list) -> void:
@@ -107,8 +127,7 @@ func update_selection(new_list) -> void:
 			tile.tile_selectable = true
 		else:
 			tile.tile_selectable = false
-	
-	
+
 
 func _on_ExploreButton_pressed() -> void:
 	switch_action(0)
@@ -186,3 +205,13 @@ func current_map_list(only_adjacent = false):
 #		data_out[i] = tile.summary()
 #		i += 1
 #	return data_out
+
+
+func _on_BaseSceneButton_pressed():
+		SceneManager.go_to("base")
+
+func show_loot():
+	var recent_loot = WorldVariables.recent_loot
+	if recent_loot != {}:
+		print('World loot ', recent_loot)
+		WorldVariables.recent_loot = {}

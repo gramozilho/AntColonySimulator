@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Assets/Placeholders/garden_top_pixel_2.png" type="Texture" id=1]
 [ext_resource path="res://Objects/CreateMap.gd" type="Script" id=2]
@@ -7,8 +7,10 @@
 [ext_resource path="res://HUD/BaseButton.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Objects/ActionHUD.gd" type="Script" id=6]
 [ext_resource path="res://HUD/Overlay.tscn" type="PackedScene" id=7]
+[ext_resource path="res://HUD/HUD.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Objects/WorldMap.gd" type="Script" id=9]
 [ext_resource path="res://Assets/Fonts/pixelmix.ttf" type="DynamicFontData" id=10]
+[ext_resource path="res://HUD/Shake.tscn" type="PackedScene" id=11]
 
 [sub_resource type="DynamicFont" id=1]
 size = 26
@@ -27,8 +29,6 @@ texture = ExtResource( 1 )
 position = Vector2( 1377.71, 627.819 )
 script = ExtResource( 2 )
 map_size = 4
-update_map_size = false
-update_map_default = false
 
 [node name="OverlayCell" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, -345 )
@@ -218,10 +218,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 22.3726
-margin_top = 23.3612
-margin_right = 62.3726
-margin_bottom = 63.3612
+margin_left = 51.0724
+margin_top = 501.692
+margin_right = 91.0724
+margin_bottom = 541.692
 script = ExtResource( 6 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -289,6 +289,8 @@ margin_right = 624.0
 margin_bottom = 32.0
 custom_fonts/font = ExtResource( 4 )
 
+[node name="Shake" parent="ActionHUD/VBoxContainer/TerritorySelect" instance=ExtResource( 11 )]
+
 [node name="Empty" type="Label" parent="ActionHUD/VBoxContainer"]
 margin_top = 126.0
 margin_right = 831.0
@@ -329,6 +331,16 @@ margin_right = 348.262
 margin_bottom = 50.1093
 text = "+"
 
+[node name="Shake" parent="ActionHUD/VBoxContainer/PartySelect" instance=ExtResource( 11 )]
+
+[node name="ErrorMsg" type="Label" parent="ActionHUD/VBoxContainer/PartySelect"]
+margin_left = 352.0
+margin_top = 9.0
+margin_right = 376.0
+margin_bottom = 41.0
+custom_fonts/font = ExtResource( 4 )
+text = "0"
+
 [node name="Empty2" type="Label" parent="ActionHUD/VBoxContainer"]
 margin_top = 216.0
 margin_right = 831.0
@@ -352,18 +364,29 @@ margin_right = 206.262
 margin_bottom = 50.1093
 text = "I'm ready"
 
+[node name="BaseSceneButton" parent="ActionHUD/VBoxContainer/ConfirmSelect" instance=ExtResource( 5 )]
+margin_left = 210.0
+margin_top = 0.0
+margin_right = 500.262
+margin_bottom = 50.1093
+text = "Back to base"
+
 [node name="TempInfo" type="Label" parent="ActionHUD/VBoxContainer"]
 margin_top = 306.0
 margin_right = 831.0
-margin_bottom = 448.0
+margin_bottom = 477.0
 custom_fonts/font = SubResource( 1 )
 text = "
 You are the green colony
 Can only explore territory adjacent to yours
 Can only invade explored territory
-Full tile background means tile is explored"
+Full tile background means tile is explored
+"
+
+[node name="HUD" parent="." instance=ExtResource( 8 )]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/ActionSelect/ExploreButton" to="." method="_on_ExploreButton_pressed"]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/ActionSelect/AttackButton" to="." method="_on_AttackButton_pressed"]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/PartySelect/LessAnts" to="ActionHUD" method="_on_LessAnts_pressed"]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/PartySelect/MoreAnts" to="ActionHUD" method="_on_MoreAnts_pressed"]
 [connection signal="pressed" from="ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction" to="." method="_on_ConfirmAction_pressed"]
+[connection signal="pressed" from="ActionHUD/VBoxContainer/ConfirmSelect/BaseSceneButton" to="." method="_on_BaseSceneButton_pressed"]

@@ -99,9 +99,17 @@ margin_right = 546.262
 margin_bottom = 194.109
 text = "Increase max ant number"
 
+[node name="WorldMapButton" parent="Interface" instance=ExtResource( 2 )]
+margin_left = 18.1343
+margin_top = 287.37
+margin_right = 372.396
+margin_bottom = 337.479
+text = "Go to World Map"
+
 [node name="HUD" parent="." instance=ExtResource( 5 )]
 [connection signal="pressed" from="Interface/MarginContainer/MarginContainer/CenterContainer/VBoxContainer/MoreAnts" to="." method="_on_MoreAnts_pressed"]
 [connection signal="pressed" from="Interface/MarginContainer/MarginContainer/CenterContainer/VBoxContainer/UpgradeFood" to="." method="_on_UpgradeFood_pressed"]
 [connection signal="pressed" from="Interface/MarginContainer/MarginContainer/CenterContainer/VBoxContainer/UpgradeAnts" to="." method="_on_UpgradeAnts_pressed"]
+[connection signal="pressed" from="Interface/WorldMapButton" to="." method="_on_BaseButton_pressed"]
 
 [editable path="Interface/MarginContainer"]

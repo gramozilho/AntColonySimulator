@@ -1,5 +1,6 @@
 extends Control
 
+
 func _on_MoreFood_pressed() -> void:
 	ColonyVariables.food = 5
 
@@ -20,3 +21,6 @@ func _on_UpgradeAnts_pressed() -> void:
 		ColonyVariables.max_ants = ColonyVariables.max_ants + 10
 	pass
 
+
+func _on_BaseButton_pressed():
+	SceneManager.go_to("map")
