@@ -8,22 +8,30 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Resource",
+"class": "SaveGame",
+"language": "GDScript",
+"path": "res://Save/SaveGame.gd"
+} ]
 _global_script_class_icons={
-
+"SaveGame": ""
 }
 
 [application]
 
 config/name="Ant Colony Simulator"
 run/main_scene="res://Objects/BaseScreen.tscn"
-config/icon="res://icon.png"
+boot_splash/use_filter=false
+config/icon="res://Assets/Placeholders/Dumb placeholder ant.png"
 
 [autoload]
 
-Shortcuts="*res://Globals/Shortcuts.gd"
-ColonyManager="*res://Globals/ColonyManager.tscn"
+ColonyVariables="*res://Globals/ColonyVariables.gd"
+WorldVariables="*res://Globals/WorldVariables.gd"
 SceneManager="*res://Globals/SceneManager.gd"
+SaveAndLoad="*res://Globals/SaveAndLoad.gd"
+Shortcuts="*res://Globals/Shortcuts.tscn"
 
 [display]
 

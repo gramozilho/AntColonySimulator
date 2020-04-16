@@ -3,16 +3,19 @@ extends Control
 var party_size = 0 setget update_party_size
 
 func _ready():
-	pass
+	$VBoxContainer/PartySelect/PartyAnts.text = "0/" + str(ColonyVariables.ants)
 
 func update_party_size(change_to):
-	party_size = change_to
-	$VBoxContainer/PartySelect/PartyAnts.text = str(party_size)
+	WorldVariables.party["ants"] = change_to
+	$VBoxContainer/PartySelect/PartyAnts.text = \
+		str(WorldVariables.party["ants"]) + "/" + str(ColonyVariables.ants)
 
 func update_party_size_request(amount):
-	var target_size = party_size+amount
-	if (target_size > 0) and (target_size <= ColonyManager.ants):
-		self.party_size += amount
+	var target_size = WorldVariables.party["ants"] + amount
+	if (target_size > 0) and (target_size <= ColonyVariables.ants):
+		WorldVariables.party["ants"] += amount
+		$VBoxContainer/PartySelect/PartyAnts.text = \
+			str(WorldVariables.party["ants"]) + "/" + str(ColonyVariables.ants)
 
 func _on_LessAnts_pressed():
 	update_party_size_request(-1)

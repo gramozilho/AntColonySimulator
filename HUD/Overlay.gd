@@ -1,3 +1,4 @@
+tool
 extends Area2D
 
 var _is_hovering := false
@@ -25,15 +26,22 @@ var tile_explored = false setget update_explored
 var tile_selectable = true
 
 func _ready():
-	update_faction(faction)
-	$CollisionPolygon2D/SpriteExplored.modulate = off_color
-	$CollisionPolygon2D/SpriteUnexplored.modulate = off_color_unexplored
-	$ArmySize.text = "(" + str(map_pos.x) + "," + str(map_pos.y) + ")"
-	update_visibility(tile_visible)
-	update_explored(tile_explored)
+	if not Engine.editor_hint:
+		initialize()
+
+func initialize():
+		update_faction(faction)
+		#if faction == 0:
+			#tile_explored = true
+			#tile_selectable = true
+		$CollisionPolygon2D/SpriteExplored.modulate = off_color
+		$CollisionPolygon2D/SpriteUnexplored.modulate = off_color_unexplored
+		$ArmySize.text = "(" + str(map_pos.x) + "," + str(map_pos.y) + ")"
+		update_visibility(tile_visible)
+		update_explored(tile_explored)
 	
 	# Handle local connections
-	# connect("input_event", self, "_on_OverlayCell_input_event")
+	#connect("input_event", self, "_on_OverlayCell_input_event")
 
 func _on_OverlayCell_input_event(_viewport, event, _shape_idx) -> void:
 	if event is InputEventMouseButton:
@@ -85,6 +93,7 @@ func update_explored(explored_flag) -> void:
 	$CollisionPolygon2D/SpriteUnexplored.visible = !explored_flag
 
 func update_faction(faction_idx):
+	#print('Update cell')
 	faction = faction_idx
 	base_color = colors[faction]
 	off_color = base_color
@@ -96,3 +105,14 @@ func update_faction(faction_idx):
 
 func get_faction_name():
 	return FACTIONS.keys()[faction]
+
+func summary() -> Dictionary:
+	return {'map_pos': map_pos, 'faction': faction, 'tile_explored': tile_explored}
+	#return {"map_pos_x": map_pos.x, "map_pos_y": map_pos.y, \
+	#	"faction": faction, "tile_explored": tile_explored}
+
+func populate(data):
+	assert(data.map_pos == map_pos)
+	faction = data.faction
+	tile_explored = data.tile_explored
+	initialize()
