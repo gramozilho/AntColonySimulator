@@ -6,7 +6,7 @@ const tile_distance = Vector2(240, 115)
 
 export var map_size = 3 
 export var update_map_size = false setget set_map_size
-export var update_map_default = false setget set_default_map
+#export var update_map_default = false setget set_default_map
 
 func _ready():
 	for tile in get_children():

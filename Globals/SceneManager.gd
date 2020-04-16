@@ -6,7 +6,7 @@ var scenes = {
 	'map': "res://Objects/WorldMap.tscn",
 	'temp': "res://Objects/TempScene.tscn"
 	}
-const SaveGame = preload("res://Save/SaveGame.gd")
+#const SaveGame = preload("res://Save/SaveGame.gd")
 var game_data = {}
 
 func _ready() -> void:

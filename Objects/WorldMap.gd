@@ -44,7 +44,7 @@ func _tile_pressed(tile_pos) -> void:
 	highlight_last_pressed(false)
 	WorldVariables.selected_territory = tile_pos
 	highlight_last_pressed(true)
-	$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.disabled = false
+	$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.release()  #disabled = false
 	var selected_tyle = get_tile_in_pos(tile_pos)
 	if selected_tyle.tile_explored:
 		$ActionHUD/VBoxContainer/TerritorySelect/TerritorySelected.text = get_tile_in_pos(tile_pos).get_faction_name()
@@ -66,7 +66,7 @@ func _on_ConfirmAction_pressed() -> void:
 		$ActionHUD/VBoxContainer/PartySelect/Shake.shake()
 		$ActionHUD/VBoxContainer/PartySelect/ErrorMsg.text = "(minimum 1)"
 	else:
-		$ActionHUD/VBoxContainer/PartySelect/ErrorMsg.text = ""
+		$ActionHUD/VBoxContainer/PartySelect/ErrorMsg.text = " "
 	if WorldVariables.selected_territory == Vector2():
 		# Shake selection
 		$ActionHUD/VBoxContainer/TerritorySelect/Shake.shake()
@@ -104,8 +104,13 @@ func switch_action(action) -> void:
 	var explore_selected = action == 0
 	WorldVariables.exploration_mode = explore_selected
 	# Disable current button
-	$ActionHUD/VBoxContainer/ActionSelect/ExploreButton.disabled = explore_selected
-	$ActionHUD/VBoxContainer/ActionSelect/AttackButton.disabled = !explore_selected
+	if explore_selected:
+		$ActionHUD/VBoxContainer/ActionSelect/ExploreButton.lock_pressed()
+		$ActionHUD/VBoxContainer/ActionSelect/AttackButton.release()
+	else:
+		$ActionHUD/VBoxContainer/ActionSelect/ExploreButton.release()
+		$ActionHUD/VBoxContainer/ActionSelect/AttackButton.lock_pressed()
+	
 	if explore_selected:
 		$ActionHUD/VBoxContainer/ConfirmSelect/ConfirmAction.text = explore_button_text
 		# Only allow selecting own territory, already explored and adjacent to both

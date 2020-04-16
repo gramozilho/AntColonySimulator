@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Assets/Placeholders/garden_top_pixel_2.png" type="Texture" id=1]
 [ext_resource path="res://Objects/CreateMap.gd" type="Script" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Objects/WorldMap.gd" type="Script" id=9]
 [ext_resource path="res://Assets/Fonts/pixelmix.ttf" type="DynamicFontData" id=10]
 [ext_resource path="res://HUD/Shake.tscn" type="PackedScene" id=11]
+[ext_resource path="res://HUD/Overlay.gd" type="Script" id=12]
 
 [sub_resource type="DynamicFont" id=1]
 size = 26
@@ -30,187 +31,224 @@ position = Vector2( 1377.71, 627.819 )
 script = ExtResource( 2 )
 map_size = 4
 
-[node name="OverlayCell" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, -345 )
+script = ExtResource( 12 )
 faction = 5
 map_pos = Vector2( 3, 0 )
 
-[node name="OverlayCell2" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell2" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, -287.5 )
+script = ExtResource( 12 )
 faction = 5
 map_pos = Vector2( 4, 0 )
 
-[node name="OverlayCell3" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell3" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, -230 )
-faction = 4
+script = ExtResource( 12 )
+faction = 3
 map_pos = Vector2( 5, 0 )
 
-[node name="OverlayCell4" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell4" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, -172.5 )
-faction = 4
+script = ExtResource( 12 )
+faction = 3
 map_pos = Vector2( 6, 0 )
 
-[node name="OverlayCell5" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell5" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, -287.5 )
-faction = 3
+script = ExtResource( 12 )
+faction = 5
 map_pos = Vector2( 2, 1 )
 
-[node name="OverlayCell6" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell6" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, -230 )
+script = ExtResource( 12 )
 faction = 5
 map_pos = Vector2( 3, 1 )
 
-[node name="OverlayCell7" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell7" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, -172.5 )
-faction = 5
+script = ExtResource( 12 )
+faction = 3
 map_pos = Vector2( 4, 1 )
 
-[node name="OverlayCell8" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell8" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, -115 )
-faction = 4
+script = ExtResource( 12 )
+faction = 3
 map_pos = Vector2( 5, 1 )
 
-[node name="OverlayCell9" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell9" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, -57.5 )
-faction = 4
+script = ExtResource( 12 )
+faction = 2
 map_pos = Vector2( 6, 1 )
 
-[node name="OverlayCell10" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell10" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, -230 )
-faction = 3
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 1, 2 )
 
-[node name="OverlayCell11" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell11" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, -172.5 )
+script = ExtResource( 12 )
 faction = 5
 map_pos = Vector2( 2, 2 )
 
-[node name="OverlayCell12" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell12" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, -115 )
+script = ExtResource( 12 )
 faction = 5
 map_pos = Vector2( 3, 2 )
 
-[node name="OverlayCell13" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell13" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, -57.5 )
-faction = 5
+script = ExtResource( 12 )
+faction = 3
 map_pos = Vector2( 4, 2 )
 
-[node name="OverlayCell14" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell14" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, 0 )
-faction = 4
+script = ExtResource( 12 )
+faction = 3
 map_pos = Vector2( 5, 2 )
 
-[node name="OverlayCell15" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell15" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, 57.5 )
-faction = 4
+script = ExtResource( 12 )
+faction = 2
 map_pos = Vector2( 6, 2 )
 
-[node name="OverlayCell16" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell16" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, -172.5 )
-faction = 3
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 0, 3 )
 
-[node name="OverlayCell17" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell17" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, -115 )
-faction = 3
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 1, 3 )
 
-[node name="OverlayCell18" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell18" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, -57.5 )
+script = ExtResource( 12 )
 faction = 5
 map_pos = Vector2( 2, 3 )
 
-[node name="OverlayCell19" parent="Map" instance=ExtResource( 7 )]
-faction = 5
+[node name="OverlayCell19" type="Area2D" parent="Map" instance=ExtResource( 7 )]
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 3, 3 )
 
-[node name="OverlayCell20" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell20" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, 57.5 )
-faction = 2
+script = ExtResource( 12 )
+faction = 3
 map_pos = Vector2( 4, 3 )
 
-[node name="OverlayCell21" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell21" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, 115 )
+script = ExtResource( 12 )
 faction = 2
 map_pos = Vector2( 5, 3 )
 
-[node name="OverlayCell22" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell22" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 360, 172.5 )
+script = ExtResource( 12 )
 faction = 2
 map_pos = Vector2( 6, 3 )
 
-[node name="OverlayCell23" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell23" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, -57.5 )
-faction = 3
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 0, 4 )
 
-[node name="OverlayCell24" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell24" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, 0 )
-faction = 3
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 1, 4 )
 
-[node name="OverlayCell25" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell25" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, 57.5 )
-faction = 3
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 2, 4 )
 
-[node name="OverlayCell26" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell26" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, 115 )
-faction = 2
+script = ExtResource( 12 )
+faction = 1
 map_pos = Vector2( 3, 4 )
 
-[node name="OverlayCell27" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell27" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, 172.5 )
+script = ExtResource( 12 )
 faction = 2
 map_pos = Vector2( 4, 4 )
 
-[node name="OverlayCell28" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell28" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 240, 230 )
+script = ExtResource( 12 )
 faction = 2
 map_pos = Vector2( 5, 4 )
 
-[node name="OverlayCell29" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell29" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, 57.5 )
-faction = 3
+script = ExtResource( 12 )
+faction = 4
 map_pos = Vector2( 0, 5 )
 
-[node name="OverlayCell30" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell30" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, 115 )
+script = ExtResource( 12 )
 faction = 1
 map_pos = Vector2( 1, 5 )
 
-[node name="OverlayCell31" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell31" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -120, 172.5 )
+script = ExtResource( 12 )
 faction = 1
 map_pos = Vector2( 2, 5 )
 
-[node name="OverlayCell32" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell32" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, 230 )
+script = ExtResource( 12 )
 faction = 1
 map_pos = Vector2( 3, 5 )
 
-[node name="OverlayCell33" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell33" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 120, 287.5 )
+script = ExtResource( 12 )
 faction = 2
 map_pos = Vector2( 4, 5 )
 
-[node name="OverlayCell34" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell34" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -360, 172.5 )
+script = ExtResource( 12 )
 faction = 1
 map_pos = Vector2( 0, 6 )
 
-[node name="OverlayCell35" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell35" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( -240, 230 )
+script = ExtResource( 12 )
 faction = 1
 map_pos = Vector2( 1, 6 )
 
-[node name="OverlayCell36" parent="Map" instance=ExtResource( 7 )]
-position = Vector2( -120, 287.5 )
+[node name="OverlayCell36" type="Area2D" parent="Map" instance=ExtResource( 7 )]
+position = Vector2( -121.851, 287.5 )
+script = ExtResource( 12 )
 faction = 1
 map_pos = Vector2( 2, 6 )
 
-[node name="OverlayCell37" parent="Map" instance=ExtResource( 7 )]
+[node name="OverlayCell37" type="Area2D" parent="Map" instance=ExtResource( 7 )]
 position = Vector2( 0, 345 )
+script = ExtResource( 12 )
 map_pos = Vector2( 3, 6 )
 
 [node name="ActionHUD" type="Control" parent="."]
@@ -336,10 +374,10 @@ text = "+"
 [node name="ErrorMsg" type="Label" parent="ActionHUD/VBoxContainer/PartySelect"]
 margin_left = 352.0
 margin_top = 9.0
-margin_right = 376.0
+margin_right = 372.0
 margin_bottom = 41.0
 custom_fonts/font = ExtResource( 4 )
-text = "0"
+text = " "
 
 [node name="Empty2" type="Label" parent="ActionHUD/VBoxContainer"]
 margin_top = 216.0
