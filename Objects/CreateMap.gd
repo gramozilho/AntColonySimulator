@@ -54,6 +54,7 @@ func set_map_size(_flag):
 		print('Not in editor, skip map update')
 
 func set_default_map(_flag):
+	# WIP, not in use   export var update_map_default = false setget set_default_map
 	if Engine.editor_hint and (get_tree() != null):
 		print('Updating map default')
 		var data = {}

@@ -1,0 +1,92 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://HUD/BaseInterface.tscn" type="PackedScene" id=1]
+[ext_resource path="res://HUD/ShopLine.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/Fonts/BaseFont.tres" type="DynamicFont" id=3]
+[ext_resource path="res://HUD/BaseLabel.tscn" type="PackedScene" id=4]
+[ext_resource path="res://HUD/ShopInterface.gd" type="Script" id=5]
+
+[node name="ShopInterface" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" parent="." instance=ExtResource( 1 )]
+margin_right = 787.0
+margin_bottom = 205.0
+
+[node name="NinePatchRect" parent="MarginContainer" index="0"]
+margin_right = 787.0
+margin_bottom = 205.0
+
+[node name="MarginContainer" parent="MarginContainer" index="1"]
+margin_right = 787.0
+margin_bottom = 205.0
+
+[node name="CenterContainer" parent="MarginContainer/MarginContainer" index="0"]
+margin_right = 787.0
+margin_bottom = 205.0
+
+[node name="VBoxContainer" parent="MarginContainer/MarginContainer/CenterContainer" index="0"]
+margin_left = 283.0
+margin_top = 39.0
+margin_right = 503.0
+margin_bottom = 165.0
+
+[node name="Label2" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer" index="0"]
+visible = false
+margin_right = 306.0
+text = "SHOP"
+
+[node name="BaseButton" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer" index="1"]
+visible = false
+margin_right = 110.262
+
+[node name="Header" type="HBoxContainer" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer" index="2"]
+margin_right = 220.0
+margin_bottom = 32.0
+
+[node name="BaseLabel" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer/Header" instance=ExtResource( 4 )]
+margin_right = 96.0
+margin_bottom = 32.0
+text = "SHOP"
+
+[node name="BaseLabel2" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer/Header" instance=ExtResource( 4 )]
+margin_left = 100.0
+margin_right = 120.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = " "
+
+[node name="BaseLabel3" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer/Header" instance=ExtResource( 4 )]
+margin_left = 124.0
+margin_right = 220.0
+margin_bottom = 32.0
+text = "cost"
+
+[node name="Ants" type="VBoxContainer" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer" index="3"]
+margin_top = 36.0
+margin_right = 220.0
+margin_bottom = 86.0
+
+[node name="ShopLine" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer/Ants" instance=ExtResource( 2 )]
+margin_right = 220.0
+
+[node name="Upgrades" type="VBoxContainer" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer" index="4"]
+margin_top = 90.0
+margin_right = 220.0
+margin_bottom = 90.0
+
+[node name="ErrorMsg" type="Label" parent="MarginContainer/MarginContainer/CenterContainer/VBoxContainer" index="5"]
+margin_top = 94.0
+margin_right = 220.0
+margin_bottom = 126.0
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+
+[editable path="MarginContainer"]

@@ -4,7 +4,7 @@ var path = "user://data.json"
 
 # Default values
 var default_data = {
-	"ColonyManager": {
+	"ColonyVariables": {
 		"resources": {
 			"ants": 5,
 			"food": 0
@@ -14,7 +14,7 @@ var default_data = {
 			"max_food": 10
 		}
 	},
-	"WorldMap": {
+	"WorldVariables": {
 		"map_data": { 
 			Vector2(0,0): {
 				'map_pos': Vector2(0,0), 
@@ -54,6 +54,10 @@ func load_game():
 
 func save_game():
 	# Collect data to save
+	var save_data = merge_dict(ColonyVariables.save(), WorldVariables.save())
+	print(save_data)
+
+func next():
 	var save_nodes = get_tree().get_nodes_in_group("save")
 	for node in save_nodes:
 		print('Saving ', node.name)
@@ -66,6 +70,20 @@ func save_game():
 	file.store_line(to_json(data))
 	file.close()
 
+static func merge_dict(target, patch):
+	for key in patch:
+		if target.has(key):
+			var tv = target[key]
+			if typeof(tv) == TYPE_DICTIONARY:
+				merge_dict(tv, patch[key])
+			else:
+				target[key] = patch[key]
+		else:
+			target[key] = patch[key]
+	return target
+
+func erase_savegame():
+	pass
 
 func reset_data():
 	data = default_data.duplicate(true)

@@ -35,3 +35,13 @@ func _on_ExtraFood_pressed():
 
 func _on_ExitButton_pressed():
 	get_tree().quit()
+
+
+func _on_SaveButton_pressed():
+	SaveAndLoad.save_game()
+
+func _on_LoadButton_pressed():
+	SaveAndLoad.load_game()
+
+func _on_EraseButton_pressed():
+	SaveAndLoad.erase_savegame()

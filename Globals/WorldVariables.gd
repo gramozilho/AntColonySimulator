@@ -23,4 +23,6 @@ func add_loot(loot):
 		map_data[selected_territory].faction = 0
 	if "territory_explored" in loot:
 		map_data[selected_territory].tile_explored = true
-		
+
+func save():
+	return map_data
